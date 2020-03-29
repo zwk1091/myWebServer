@@ -56,6 +56,7 @@ threadpool_t *threadpool_create(int thread_count, int queue_size, int flags)
     return NULL;
 }
 
+// add task to task_queue 
 int threadpool_add(threadpool_t *pool, void (*function)(void *), void *argument, int flags)
 {
     //printf("add to thread pool !\n");

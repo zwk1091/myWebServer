@@ -15,7 +15,9 @@
 
 using namespace std;
 
+// num of thread
 const int THREADPOOL_THREAD_NUM = 4;
+// size of task queue
 const int QUEUE_SIZE = 65535;
 const int PORT = 8888;
 const int ASK_STATIC_FILE = 1;
@@ -104,7 +106,7 @@ void acceptConnection(int listen_fd, int epoll_fd, const string &path)
         // 文件描述符可以读，边缘触发(Edge Triggered)模式，保证一个socket连接在任一时刻只被一个线程处理
         __uint32_t _epo_event = EPOLLIN | EPOLLET | EPOLLONESHOT;
         epoll_add(epoll_fd, accept_fd, static_cast<void*>(req_info), _epo_event);
-        // 新增时间信息
+        // 新增时间信息 connection request ,so new a timer
         mytimer *mtimer = new mytimer(req_info, TIMER_TIME_OUT);
         req_info->addTimer(mtimer);
         pthread_mutex_lock(&qlock);
@@ -123,10 +125,10 @@ void handle_events(int epoll_fd, int listen_fd, struct epoll_event* events, int 
         requestData* request = (requestData*)(events[i].data.ptr);
         int fd = request->getFd();
 
-        // 有事件发生的描述符为监听描述符
+        // 有事件发生的描述符为监听描述符,handle connection request
         if(fd == listen_fd)
         {
-            //cout << "This is listen_fd" << endl;
+            cout << "This is listen_fd" << endl;
             acceptConnection(listen_fd, epoll_fd, path);
         }
         else
@@ -159,6 +161,7 @@ void handle_events(int epoll_fd, int listen_fd, struct epoll_event* events, int 
 就不用再重新申请requestData节点了，这样可以继续重复利用前面的requestData，减少了一次delete和一次new的时间。
 */
 
+// the connection is expired!!
 void handle_expired_event()
 {
     pthread_mutex_lock(&qlock);
@@ -212,8 +215,11 @@ int main()
     {
         int events_num = my_epoll_wait(epoll_fd, events, MAXEVENTS, -1);
         //printf("%zu\n", myTimerQueue.size());        
-        if (events_num == 0)
+        if (events_num == 0) {
+            printf("*********************%d\n",events_num);
             continue;
+        }
+        printf("*********************%d\n",events_num);
         printf("%d\n", events_num);
         //printf("%zu\n", myTimerQueue.size());    
         // else

@@ -87,7 +87,6 @@ private:
     int analysisRequest();
 
 public:
-
     requestData();
     requestData(int _epollfd, int _fd, std::string _path);
     ~requestData();
