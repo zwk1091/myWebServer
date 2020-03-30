@@ -263,6 +263,7 @@ void requestData::handleRequest()
 int requestData::parse_URI()
 {
     string &str = content;
+    cout<<str<<endl;
     // 读到完整的请求行再开始解析请求
     int pos = str.find('\r', now_read_pos);
     if (pos < 0)
