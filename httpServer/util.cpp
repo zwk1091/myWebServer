@@ -19,7 +19,7 @@ void do_read(int epollfd , int fd,char *buf) {
 		delete_event(epollfd,fd,EPOLLIN) ;
 	} else {
 		printf ("read message is ：%s" ,buf);
-// 川修改描述符对应的事件，由读改为写＊／
+// 修改描述符对应的事件，由读改为写＊／
 		modify_event (epollfd, fd, EPOLLOUT);
 	}
 }
